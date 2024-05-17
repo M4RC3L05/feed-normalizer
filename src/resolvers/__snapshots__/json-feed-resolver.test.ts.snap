@@ -1,0 +1,45 @@
+export const snapshot = {};
+
+snapshot[`resolver() > should be able to resolve a spec compliant json feed 1`] = `
+{
+  items: [
+    {
+      content: "<p>Learn about JSON Feed and its advantages...</p>",
+      createdAt: 2024-05-16T00:00:00.000Z,
+      enclosures: [],
+      id: "1",
+      image: undefined,
+      link: "https://example.com/post/1",
+      title: "JSON Feed: A Modern Approach to RSS",
+      updatedAt: undefined,
+    },
+    {
+      content: "A beginner's guide to machine learning",
+      createdAt: 2024-05-15T00:00:00.000Z,
+      enclosures: [],
+      id: "2",
+      image: undefined,
+      link: "https://example.com/post/2",
+      title: "Exploring Machine Learning with Python",
+      updatedAt: undefined,
+    },
+    {
+      content: "Travel inspiration for the year",
+      createdAt: 2024-05-14T00:00:00.000Z,
+      enclosures: [
+        {
+          type: undefined,
+          url: "https://example.com/post/3/map.pdf",
+        },
+      ],
+      id: "3",
+      image: "https://example.com/post/3.jpg",
+      link: "https://example.com/post/3",
+      title: "Top 10 Travel Destinations for 2024",
+      updatedAt: 2024-05-14T00:00:00.000Z,
+    },
+  ],
+  title: "My Awesome Blog",
+  url: "https://example.com",
+}
+`;

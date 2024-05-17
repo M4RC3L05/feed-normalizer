@@ -1,0 +1,142 @@
+export const snapshot = {};
+
+snapshot[`atomFeedResolver() > should be able to resolve a spec compliant atom feed 1`] = `
+{
+  items: [
+    {
+      content: "This is a summary of the first item content.",
+      createdAt: 2024-05-16T10:00:00.000Z,
+      enclosures: [],
+      id: "urn:uuid:11111111-2222-3333-4444-555555555555",
+      image: undefined,
+      link: "http://example.com/item/1",
+      title: "This is the first item title",
+      updatedAt: undefined,
+    },
+    {
+      content: "This is the full HTML content of the second item.",
+      createdAt: undefined,
+      enclosures: [],
+      id: "urn:uuid:22222222-3333-4444-5555-666666666666",
+      image: undefined,
+      link: "http://example.com/item/2",
+      title: "Second item with categories",
+      updatedAt: 2024-05-17T15:30:00.000Z,
+    },
+    {
+      content: undefined,
+      createdAt: undefined,
+      enclosures: [
+        {
+          type: "audio/mpeg",
+          url: "http://example.com/audio/podcast.mp3",
+        },
+      ],
+      id: "urn:uuid:33333333-4444-5555-6666-777777777777",
+      image: undefined,
+      link: "http://example.com/item/3",
+      title: "Item with enclosure",
+      updatedAt: 2024-05-17T12:45:00.000Z,
+    },
+  ],
+  title: "Example Atom Feed",
+  url: "http://example.com/feed",
+}
+`;
+
+snapshot[`rssFeedResolver() > should be able to resolve a spec compliant rss feed 1`] = `
+{
+  items: [
+    {
+      content: "This is a summary of the first item content.",
+      createdAt: 2024-05-16T10:00:00.000Z,
+      enclosures: [],
+      id: "urn:uuid:11111111-2222-3333-4444-555555555555",
+      image: undefined,
+      link: "http://example.com/item/1",
+      title: "This is the first item title",
+      updatedAt: undefined,
+    },
+    {
+      content: "This is the full HTML content of the second item.",
+      createdAt: 2024-05-17T15:30:00.000Z,
+      enclosures: [],
+      id: "urn:uuid:22222222-3333-4444-5555-666666666666",
+      image: undefined,
+      link: "http://example.com/item/2",
+      title: "Second item with category",
+      updatedAt: undefined,
+    },
+    {
+      content: undefined,
+      createdAt: 2024-05-17T12:45:00.000Z,
+      enclosures: [
+        {
+          type: "image/jpeg",
+          url: "http://example.com/image.jpg",
+        },
+      ],
+      id: "urn:uuid:33333333-4444-5555-6666-777777777777",
+      image: "http://example.com/image.jpg",
+      link: "http://example.com/item/3",
+      title: "Item with image enclosure",
+      updatedAt: undefined,
+    },
+  ],
+  title: "Example RSS Feed",
+  url: "http://example.com/feed",
+}
+`;
+
+snapshot[`rdfFeedResolver() > should be able to resolve a spec compliant rdf feed 1`] = `
+{
+  items: [
+    {
+      content: "Processing document inclusions with general XML tools can be 
+            problematic. This article proposes a way of preserving inclusion 
+            information through SAX-based processing.",
+      createdAt: undefined,
+      enclosures: [],
+      id: undefined,
+      image: undefined,
+      link: "http://xml.com/pub/2000/08/09/xslt/xslt.html",
+      title: "Processing Inclusions with XSLT",
+      updatedAt: undefined,
+    },
+    {
+      content: "Tool and API support for the Resource Description Framework 
+            is slowly coming of age. Edd Dumbill takes a look at RDFDB, 
+            one of the most exciting new RDF toolkits.",
+      createdAt: undefined,
+      enclosures: [],
+      id: undefined,
+      image: undefined,
+      link: "http://xml.com/pub/2000/08/09/rdfdb/index.html",
+      title: "Putting RDF to Work",
+      updatedAt: undefined,
+    },
+  ],
+  title: "XML.com",
+  url: "http://xml.com/pub",
+}
+`;
+
+snapshot[`rdfFeedResolver() > should be able to resolve a spec compliant rdf feed 2`] = `
+{
+  items: [
+    {
+      content: "XML is placing increasingly heavy loads on the existing technical
+              infrastructure of the Internet.",
+      createdAt: undefined,
+      enclosures: [],
+      id: undefined,
+      image: undefined,
+      link: "http://c.moreover.com/click/here.pl?r123",
+      title: "XML: A Disruptive Technology",
+      updatedAt: undefined,
+    },
+  ],
+  title: "Meerkat",
+  url: "http://meerkat.oreillynet.com",
+}
+`;
