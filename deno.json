@@ -1,0 +1,27 @@
+{
+  "name": "@m4rc3l05/feed-normalizer",
+  "version": "0.0.0",
+  "exports": "./src/mod.ts",
+  "tasks": {
+    "deps:lock": "deno cache --lock=deno.lock --lock-write src/*.ts src/**/*.ts",
+    "deps": "deno cache --reload --lock=deno.lock src/*.ts src/**/*.ts"
+  },
+  "imports": {
+    "@lowlighter/xml": "jsr:@lowlighter/xml@4.0.1",
+    "radash": "npm:radash@12.1.0"
+  },
+  "publish": {
+    "include": [
+      "./src/*.ts",
+      "./src/**/*.ts",
+      "LICENSE",
+      "README.md",
+      "deno.json"
+    ],
+    "exclude": [
+      "./src/*.test.ts",
+      "./src/**/*.test.ts",
+      "./src/test_deps.ts"
+    ]
+  }
+}

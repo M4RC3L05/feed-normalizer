@@ -1,0 +1,65 @@
+{
+  "version": "3",
+  "packages": {
+    "specifiers": {
+      "jsr:@lowlighter/xml@4.0.1": "jsr:@lowlighter/xml@4.0.1",
+      "jsr:@std/assert@0.224.0": "jsr:@std/assert@0.224.0",
+      "jsr:@std/assert@^0.224.0": "jsr:@std/assert@0.224.0",
+      "jsr:@std/fmt@^0.224.0": "jsr:@std/fmt@0.224.0",
+      "jsr:@std/fs@^0.224.0": "jsr:@std/fs@0.224.0",
+      "jsr:@std/internal@^0.224.0": "jsr:@std/internal@0.224.0",
+      "jsr:@std/path@^0.224.0": "jsr:@std/path@0.224.0",
+      "jsr:@std/testing@0.224.0": "jsr:@std/testing@0.224.0",
+      "npm:radash@12.1.0": "npm:radash@12.1.0"
+    },
+    "jsr": {
+      "@lowlighter/xml@4.0.1": {
+        "integrity": "91fec6ea3c2479187148d4ac9de1ab3b92859b9ce96f6df1b1f1a40c6dcf9281"
+      },
+      "@std/assert@0.224.0": {
+        "integrity": "8643233ec7aec38a940a8264a6e3eed9bfa44e7a71cc6b3c8874213ff401967f",
+        "dependencies": [
+          "jsr:@std/fmt@^0.224.0",
+          "jsr:@std/internal@^0.224.0"
+        ]
+      },
+      "@std/fmt@0.224.0": {
+        "integrity": "e20e9a2312a8b5393272c26191c0a68eda8d2c4b08b046bad1673148f1d69851"
+      },
+      "@std/fs@0.224.0": {
+        "integrity": "52a5ec89731ac0ca8f971079339286f88c571a4d61686acf75833f03a89d8e69",
+        "dependencies": [
+          "jsr:@std/path@^0.224.0"
+        ]
+      },
+      "@std/internal@0.224.0": {
+        "integrity": "afc50644f9cdf4495eeb80523a8f6d27226b4b36c45c7c195dfccad4b8509291"
+      },
+      "@std/path@0.224.0": {
+        "integrity": "55bca6361e5a6d158b9380e82d4981d82d338ec587de02951e2b7c3a24910ee6"
+      },
+      "@std/testing@0.224.0": {
+        "integrity": "371b8a929aa7132240d5dd766a439be8f780ef5c176ab194e0bcab72370c761e",
+        "dependencies": [
+          "jsr:@std/assert@^0.224.0",
+          "jsr:@std/fmt@^0.224.0",
+          "jsr:@std/fs@^0.224.0",
+          "jsr:@std/path@^0.224.0"
+        ]
+      }
+    },
+    "npm": {
+      "radash@12.1.0": {
+        "integrity": "sha512-b0Zcf09AhqKS83btmUeYBS8tFK7XL2e3RvLmZcm0sTdF1/UUlHSsjXdCcWNxe7yfmAlPve5ym0DmKGtTzP6kVQ==",
+        "dependencies": {}
+      }
+    }
+  },
+  "remote": {},
+  "workspace": {
+    "dependencies": [
+      "jsr:@lowlighter/xml@4.0.1",
+      "npm:radash@12.1.0"
+    ]
+  }
+}
