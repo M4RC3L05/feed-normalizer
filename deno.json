@@ -1,6 +1,6 @@
 {
   "name": "@m4rc3l05/feed-normalizer",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "exports": "./src/mod.ts",
   "tasks": {
     "deps:lock": "deno cache --lock=deno.lock --lock-write src/*.ts src/**/*.ts",
