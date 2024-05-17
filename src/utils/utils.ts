@@ -74,7 +74,7 @@ export const findImageInEnclosures = (
   })?.url;
 
 export const findImageInContent = (content: string) => {
-  const r = /<img[^>]+src="([^"]+)"/img;
+  const r = /<img[^>]+src=["']([^"']+)["']/img;
   const match = r.exec(content);
 
   if (match?.[1]) {

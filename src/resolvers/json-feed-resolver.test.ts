@@ -363,6 +363,19 @@ describe("resolver()", () => {
               .items[0].image,
             "biz.png",
           );
+
+          assertEquals(
+            resolver(
+              JSON.stringify({
+                items: [{
+                  content_html:
+                    `<p>foo</p> <img src=\'biz.png\' /> <img src="foo.png" />`,
+                }],
+              }),
+            )
+              .items[0].image,
+            "biz.png",
+          );
         });
 
         it("should resolve feed item image from `link`", () => {

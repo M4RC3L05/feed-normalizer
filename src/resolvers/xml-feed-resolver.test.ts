@@ -560,10 +560,9 @@ describe("resolver()", () => {
 
           assertEquals(
             resolver({}, [{
-              "content:encoded":
-                'foobar <img alt="biz" src="baz" /> <img alt="biz" src="foo" />',
+              "content:encoded": "<img src='foo' />",
             }]).items[0].image,
-            "baz",
+            "foo",
           );
         });
 
