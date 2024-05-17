@@ -146,7 +146,9 @@ const resolveFeedItemImage = (feedItem: Record<string, unknown>) => {
     .flatMap((path) => _.get(feedItem, path))
     .filter((value) => typeof value === "string" || _.isObject(value))
     .map((value) => {
-      if (typeof value === "string") return value;
+      if (typeof value === "string") {
+        return value;
+      }
 
       const url = (_.get(value, "@src") ?? _.get(value, "@url") ??
         _.get(value, "@href")) as string | undefined;
@@ -160,7 +162,9 @@ const resolveFeedItemImage = (feedItem: Record<string, unknown>) => {
         return url;
       }
     })
-    .at(0)?.trim() as string | undefined;
+    .filter((value) => typeof value === "string" && value.trim().length > 0)
+    .map((value) => (value as string).trim())
+    .at(0) as string | undefined;
 
   if (typeof result === "string" && result.length > 0) return result;
 
@@ -244,20 +248,14 @@ export const resolver = (
 };
 
 export const atomFeedResolver: FeedResolver = (feed: string) => {
-  try {
-    const data = parseXml(feed)?.feed as Record<string, unknown>;
+  const data = parseXml(feed)?.feed as Record<string, unknown>;
 
-    return resolver(
-      data,
-      Array.isArray(data.entry)
-        ? data.entry
-        : [data.entry] as Record<string, unknown>[],
-    );
-  } catch (e) {
-    console.log(Deno.inspect(e));
-
-    throw e;
-  }
+  return resolver(
+    data,
+    Array.isArray(data.entry)
+      ? data.entry
+      : [data.entry] as Record<string, unknown>[],
+  );
 };
 
 export const atomFeedIsResolvable: IsResolvable = (feedData) => {

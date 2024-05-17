@@ -534,6 +534,16 @@ describe("resolver()", () => {
           );
 
           assertEquals(
+            resolver({}, [{
+              "media:group": {
+                "media:content": {},
+                "media:thumbnail": { "@url": "foo" },
+              },
+            }]).items[0].image,
+            "foo",
+          );
+
+          assertEquals(
             resolver({}, [{ "itunes:image": { "@href": "foo" } }]).items[0]
               .image,
             "foo",
