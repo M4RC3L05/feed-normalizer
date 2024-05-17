@@ -93,8 +93,8 @@ snapshot[`rdfFeedResolver() > should be able to resolve a spec compliant rdf fee
   items: [
     {
       content: "Processing document inclusions with general XML tools can be 
-            problematic. This article proposes a way of preserving inclusion 
-            information through SAX-based processing.",
+              problematic. This article proposes a way of preserving inclusion 
+              information through SAX-based processing.",
       createdAt: undefined,
       enclosures: [],
       id: undefined,
@@ -105,8 +105,8 @@ snapshot[`rdfFeedResolver() > should be able to resolve a spec compliant rdf fee
     },
     {
       content: "Tool and API support for the Resource Description Framework 
-            is slowly coming of age. Edd Dumbill takes a look at RDFDB, 
-            one of the most exciting new RDF toolkits.",
+              is slowly coming of age. Edd Dumbill takes a look at RDFDB, 
+              one of the most exciting new RDF toolkits.",
       createdAt: undefined,
       enclosures: [],
       id: undefined,
@@ -126,7 +126,7 @@ snapshot[`rdfFeedResolver() > should be able to resolve a spec compliant rdf fee
   items: [
     {
       content: "XML is placing increasingly heavy loads on the existing technical
-              infrastructure of the Internet.",
+                infrastructure of the Internet.",
       createdAt: undefined,
       enclosures: [],
       id: undefined,

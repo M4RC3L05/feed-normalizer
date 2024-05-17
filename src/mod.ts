@@ -1,7 +1,9 @@
 import {
   atomFeedIsResolvable,
   atomFeedResolver,
-  type FeedResolver,
+  type Feed,
+  isValidJsonData,
+  isValidXMLData,
   jsonFeedIsResolvable,
   jsonFeedResolver,
   rdfFeedIsResolvable,
@@ -10,10 +12,30 @@ import {
   rssFeedResolver,
 } from "./resolvers/mod.ts";
 
-export const resolve: FeedResolver = (data: string) => {
-  if (jsonFeedIsResolvable(data)) return jsonFeedResolver(data);
-  else if (atomFeedIsResolvable(data)) return atomFeedResolver(data);
-  else if (rssFeedIsResolvable(data)) return rssFeedResolver(data);
-  else if (rdfFeedIsResolvable(data)) return rdfFeedResolver(data);
-  else throw new Error("Could not find suitable feed resolve for given data");
+export const resolve = (payload: string): Feed => {
+  const jsonResponse = isValidJsonData(payload);
+
+  if (jsonResponse.success) {
+    if (jsonFeedIsResolvable(jsonResponse.data)) {
+      return jsonFeedResolver(jsonResponse.data);
+    }
+  }
+
+  const xmlResponse = isValidXMLData(payload);
+
+  if (xmlResponse.success) {
+    if (atomFeedIsResolvable(xmlResponse.data)) {
+      return atomFeedResolver(xmlResponse.data);
+    }
+
+    if (rssFeedIsResolvable(xmlResponse.data)) {
+      return rssFeedResolver(xmlResponse.data);
+    }
+
+    if (rdfFeedIsResolvable(xmlResponse.data)) {
+      return rdfFeedResolver(xmlResponse.data);
+    }
+  }
+
+  throw new Error("Could not find suitable feed resolve for given data");
 };

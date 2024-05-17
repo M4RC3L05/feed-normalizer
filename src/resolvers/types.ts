@@ -15,5 +15,7 @@ export type FeedItem = {
   updatedAt: Date | undefined;
 };
 
-export type FeedResolver = (feedData: string) => Feed;
-export type IsResolvable = (feedData: string) => boolean;
+export type FeedResolver = (feed: Record<string, unknown>) => Feed;
+export type IsResolvable = (
+  feedData: string,
+) => { success: false } | { success: true; data: Record<string, unknown> };

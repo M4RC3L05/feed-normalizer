@@ -1,4 +1,4 @@
-import { _, XMLBuilder, XMLParser } from "../deps.ts";
+import { _, XMLBuilder, XMLParser, XMLValidator } from "../deps.ts";
 import type { Feed, FeedItem, FeedResolver, IsResolvable } from "./types.ts";
 import { findImageInContent, normalizeContentUrls } from "../utils/utils.ts";
 import {
@@ -6,6 +6,8 @@ import {
   isLinkPossiblyAImage,
   normalizeUrl,
 } from "../utils/utils.ts";
+
+const isXMLValid = (data: string) => XMLValidator.validate(data);
 
 const parseXml = (data: string) =>
   new XMLParser({
@@ -253,8 +255,19 @@ export const resolver = (
   return result;
 };
 
-export const atomFeedResolver: FeedResolver = (feed: string) => {
-  const data = parseXml(feed)?.feed as Record<string, unknown>;
+export const isValidXMLData: IsResolvable = (data: string) =>
+  typeof data === "string" && data.trim().length > 0 &&
+    isXMLValid(data) === true
+    ? { success: true, data: parseXml(data) as Record<string, unknown> }
+    : { success: false };
+
+export const atomFeedIsResolvable = (feed: Record<string, unknown>): boolean =>
+  _.isObject(_.get(feed, "feed")) && !_.isEmpty(_.get(feed, "feed.entry"));
+
+export const atomFeedResolver: FeedResolver = (
+  feed: Record<string, unknown>,
+) => {
+  const data = _.get(feed, "feed") as Record<string, unknown>;
 
   return resolver(
     data,
@@ -264,19 +277,13 @@ export const atomFeedResolver: FeedResolver = (feed: string) => {
   );
 };
 
-export const atomFeedIsResolvable: IsResolvable = (feedData) => {
-  try {
-    const data = parseXml(feedData);
+export const rssFeedIsResolvable = (feed: Record<string, unknown>): boolean =>
+  _.isObject(_.get(feed, "rss")) && !_.isEmpty(_.get(feed, "rss.channel"));
 
-    return _.isObject(_.get(data, "feed")) &&
-      !_.isEmpty(_.get(data, "feed.entry"));
-  } catch {
-    return false;
-  }
-};
-
-export const rssFeedResolver: FeedResolver = (feed: string) => {
-  const data = _.get(parseXml(feed), "rss.channel") as Record<string, unknown>;
+export const rssFeedResolver: FeedResolver = (
+  feed: Record<string, unknown>,
+) => {
+  const data = _.get(feed, "rss.channel") as Record<string, unknown>;
 
   return resolver(
     data,
@@ -286,38 +293,19 @@ export const rssFeedResolver: FeedResolver = (feed: string) => {
   );
 };
 
-export const rssFeedIsResolvable: IsResolvable = (feedData) => {
-  try {
-    const data = parseXml(feedData);
+export const rdfFeedIsResolvable = (feed: Record<string, unknown>): boolean =>
+  _.isObject(_.get(feed, "rdf:RDF")) &&
+  !_.isEmpty(_.get(feed, "rdf:RDF.channel")) &&
+  !_.isEmpty(_.get(feed, "rdf:RDF.item"));
 
-    return _.isObject(_.get(data, "rss")) &&
-      !_.isEmpty(_.get(data, "rss.channel"));
-  } catch {
-    return false;
-  }
-};
+export const rdfFeedResolver: FeedResolver = (
+  feed: Record<string, unknown>,
+) => {
+  const channel = _.get(feed, "rdf:RDF.channel") as Record<string, unknown>;
+  const items = _.get(feed, "rdf:RDF.item") as Record<string, unknown> | Record<
+    string,
+    unknown
+  >[];
 
-export const rdfFeedResolver: FeedResolver = (feed: string) => {
-  const parsed = parseXml(feed);
-  const channel = _.get(parsed, "rdf:RDF.channel") as Record<string, unknown>;
-  const items = _.get(parsed, "rdf:RDF.item") as
-    | Record<string, unknown>
-    | Record<string, unknown>[];
-
-  return resolver(
-    channel,
-    Array.isArray(items) ? items : [items],
-  );
-};
-
-export const rdfFeedIsResolvable: IsResolvable = (feedData) => {
-  try {
-    const data = parseXml(feedData);
-
-    return _.isObject(_.get(data, "rdf:RDF")) &&
-      !_.isEmpty(_.get(data, "rdf:RDF.channel")) &&
-      !_.isEmpty(_.get(data, "rdf:RDF.item"));
-  } catch {
-    return false;
-  }
+  return resolver(channel, Array.isArray(items) ? items : [items]);
 };

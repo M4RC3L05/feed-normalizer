@@ -6,6 +6,7 @@ describe("resolve()", () => {
   it("should throw and error if feed is not supported", () => {
     try {
       resolve("");
+
       fail("should throw");
     } catch (error) {
       assertEquals(

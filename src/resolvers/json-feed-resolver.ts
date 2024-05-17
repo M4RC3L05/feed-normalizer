@@ -98,29 +98,34 @@ const resolveUpdatedAt = (feedItem: Record<string, unknown>) => {
   return new Date(feedItem.date_modified);
 };
 
-export const resolver: FeedResolver = (feed: string) => {
-  const data = JSON.parse(feed);
+export const jsonFeedResolver: FeedResolver = (
+  feed: Record<string, unknown>,
+) => {
+  const root = typeof feed.home_page_url === "string" &&
+      feed.home_page_url.trim().length > 0
+    ? feed.home_page_url.trim()
+    : undefined;
 
   const result: Feed = {
-    title: data.title,
-    url: data.home_page_url,
-    items: (Array.isArray(data.items) ? data.items : []).map((
+    title: typeof feed.title === "string" && feed.title.trim().length > 0
+      ? feed.title.trim()
+      : undefined,
+    url: root,
+    items: (Array.isArray(feed.items) ? feed.items : []).map((
       item: Record<string, unknown>,
     ) => {
       const link = resolveFeedItemLink(item);
 
       let image = resolveFeedItemImage(item);
-      image = normalizeUrl(image, link ?? data.home_page_url) ?? image;
+      image = normalizeUrl(image, link ?? root) ??
+        image;
 
-      const enclosures = resolveFeedItemEnclosures(item)
-        .map(({ url, ...rest }) => ({
-          ...rest,
-          url: normalizeUrl(url, link ?? data.home_page_url) ?? url,
-        }));
+      const enclosures = resolveFeedItemEnclosures(item).map((
+        { url, ...rest },
+      ) => ({ ...rest, url: normalizeUrl(url, link ?? root) ?? url }));
 
       let content = resolveFeedItemContent(item);
-      content = normalizeContentUrls(content, link ?? data.home_page_url) ??
-        content;
+      content = normalizeContentUrls(content, link ?? root) ?? content;
 
       return ({
         createdAt: resolveFeedItemPubDate(item),
@@ -138,15 +143,14 @@ export const resolver: FeedResolver = (feed: string) => {
   return result;
 };
 
-const isJson = (data: unknown) => {
+export const isValidJsonData: IsResolvable = (data: unknown) => {
   try {
     // deno-lint-ignore no-explicit-any
-    JSON.parse(data as any);
-    return true;
+    return { success: true, data: JSON.parse(data as any) };
   } catch {
-    return false;
+    return { success: false };
   }
 };
 
-export const isResolvable: IsResolvable = (feedData) =>
-  isJson(feedData) && Array.isArray(JSON.parse(feedData).items);
+export const jsonFeedIsResolvable = (feed: Record<string, unknown>): boolean =>
+  Array.isArray(feed?.items);

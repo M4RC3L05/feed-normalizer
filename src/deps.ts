@@ -1,2 +1,2 @@
 export * as _ from "radash";
-export { XMLBuilder, XMLParser } from "fast-xml-parser";
+export { XMLBuilder, XMLParser, XMLValidator } from "fast-xml-parser";

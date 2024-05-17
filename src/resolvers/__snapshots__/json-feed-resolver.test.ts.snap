@@ -1,6 +1,6 @@
 export const snapshot = {};
 
-snapshot[`resolver() > should be able to resolve a spec compliant json feed 1`] = `
+snapshot[`jsonFeedResolver() > should be able to resolve a spec compliant json feed 1`] = `
 {
   items: [
     {
