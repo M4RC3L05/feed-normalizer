@@ -1,4 +1,4 @@
-import { _, parse, stringify } from "../deps.ts";
+import { _, XMLBuilder, XMLParser } from "../deps.ts";
 import type { Feed, FeedItem, FeedResolver, IsResolvable } from "./types.ts";
 import { findImageInContent, normalizeContentUrls } from "../utils/utils.ts";
 import {
@@ -8,12 +8,18 @@ import {
 } from "../utils/utils.ts";
 
 const parseXml = (data: string) =>
-  parse(data, {
-    emptyToNull: false,
-    flatten: true,
-    reviveBooleans: false,
-    reviveNumbers: false,
-  });
+  new XMLParser({
+    ignoreAttributes: false,
+    attributeNamePrefix: "@",
+    textNodeName: "#text",
+  }).parse(data);
+
+const stringyfyXML = (data: Record<string, unknown>) =>
+  new XMLBuilder({
+    ignoreAttributes: false,
+    attributeNamePrefix: "@",
+    textNodeName: "#text",
+  }).build(data);
 
 const resolveFeedTitle = (feed: Record<string, unknown>) =>
   ["title"]
@@ -65,7 +71,7 @@ const resolveFeedItemContent = (feedItem: Record<string, unknown>) =>
       // Parse xhtml object
       _.get(value, "@type") === "xhtml"
         // deno-lint-ignore no-explicit-any
-        ? stringify(value as any)
+        ? stringyfyXML(value as any)
         : _.isObject(value)
         ? _.get(value, "#text")
         : value

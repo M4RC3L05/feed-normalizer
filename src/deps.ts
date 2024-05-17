@@ -1,2 +1,2 @@
-export { parse, stringify } from "@lowlighter/xml";
 export * as _ from "radash";
+export { XMLBuilder, XMLParser } from "fast-xml-parser";

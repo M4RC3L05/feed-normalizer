@@ -2,7 +2,6 @@
   "version": "3",
   "packages": {
     "specifiers": {
-      "jsr:@lowlighter/xml@4.0.1": "jsr:@lowlighter/xml@4.0.1",
       "jsr:@std/assert@0.224.0": "jsr:@std/assert@0.224.0",
       "jsr:@std/assert@^0.224.0": "jsr:@std/assert@0.224.0",
       "jsr:@std/fmt@^0.224.0": "jsr:@std/fmt@0.224.0",
@@ -10,12 +9,10 @@
       "jsr:@std/internal@^0.224.0": "jsr:@std/internal@0.224.0",
       "jsr:@std/path@^0.224.0": "jsr:@std/path@0.224.0",
       "jsr:@std/testing@0.224.0": "jsr:@std/testing@0.224.0",
+      "npm:fast-xml-parser@4.3.6": "npm:fast-xml-parser@4.3.6",
       "npm:radash@12.1.0": "npm:radash@12.1.0"
     },
     "jsr": {
-      "@lowlighter/xml@4.0.1": {
-        "integrity": "91fec6ea3c2479187148d4ac9de1ab3b92859b9ce96f6df1b1f1a40c6dcf9281"
-      },
       "@std/assert@0.224.0": {
         "integrity": "8643233ec7aec38a940a8264a6e3eed9bfa44e7a71cc6b3c8874213ff401967f",
         "dependencies": [
@@ -49,8 +46,18 @@
       }
     },
     "npm": {
+      "fast-xml-parser@4.3.6": {
+        "integrity": "sha512-M2SovcRxD4+vC493Uc2GZVcZaj66CCJhWurC4viynVSTvrpErCShNcDz1lAho6n9REQKvL/ll4A4/fw6Y9z8nw==",
+        "dependencies": {
+          "strnum": "strnum@1.0.5"
+        }
+      },
       "radash@12.1.0": {
         "integrity": "sha512-b0Zcf09AhqKS83btmUeYBS8tFK7XL2e3RvLmZcm0sTdF1/UUlHSsjXdCcWNxe7yfmAlPve5ym0DmKGtTzP6kVQ==",
+        "dependencies": {}
+      },
+      "strnum@1.0.5": {
+        "integrity": "sha512-J8bbNyKKXl5qYcR36TIO8W3mVGVHrmmxsd5PAItGkmyzwJvybiw2IVq5nqd0i4LSNSkB/sx9VHllbfFdr9k1JA==",
         "dependencies": {}
       }
     }
@@ -58,7 +65,7 @@
   "remote": {},
   "workspace": {
     "dependencies": [
-      "jsr:@lowlighter/xml@4.0.1",
+      "npm:fast-xml-parser@4.3.6",
       "npm:radash@12.1.0"
     ]
   }

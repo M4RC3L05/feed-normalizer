@@ -255,6 +255,17 @@ describe("resolver()", () => {
               .content,
             "bar",
           );
+
+          assertEquals(
+            resolver({}, [{
+              "content:encoded": {
+                div: { a: { "@href": "foo" }, p: { "#text": "foo" } },
+                "@type": "xhtml",
+              },
+            }]).items[0]
+              .content,
+            '<div><a href="foo"></a><p>foo</p></div>',
+          );
         });
       });
 
