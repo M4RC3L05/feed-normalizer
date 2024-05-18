@@ -5,6 +5,7 @@ import {
   isLinkPossiblyAImage,
   normalizeContentUrls,
   normalizeUrl,
+  unscapeEntities,
 } from "../utils/utils.ts";
 
 const resolveFeedItemId = (feedItem: Record<string, unknown>) => {
@@ -101,30 +102,37 @@ const resolveUpdatedAt = (feedItem: Record<string, unknown>) => {
 export const jsonFeedResolver: FeedResolver = (
   feed: Record<string, unknown>,
 ) => {
-  const root = typeof feed.home_page_url === "string" &&
+  const root = unscapeEntities(
+    typeof feed.home_page_url === "string" &&
       feed.home_page_url.trim().length > 0
-    ? feed.home_page_url.trim()
-    : undefined;
+      ? feed.home_page_url.trim()
+      : undefined,
+  );
 
   const result: Feed = {
-    title: typeof feed.title === "string" && feed.title.trim().length > 0
-      ? feed.title.trim()
-      : undefined,
+    title: unscapeEntities(
+      typeof feed.title === "string" && feed.title.trim().length > 0
+        ? feed.title.trim()
+        : undefined,
+    ),
     url: root,
     items: (Array.isArray(feed.items) ? feed.items : []).map((
       item: Record<string, unknown>,
     ) => {
-      const link = resolveFeedItemLink(item);
+      const link = unscapeEntities(resolveFeedItemLink(item));
 
-      let image = resolveFeedItemImage(item);
+      let image = unscapeEntities(resolveFeedItemImage(item));
       image = normalizeUrl(image, link ?? root) ??
         image;
 
       const enclosures = resolveFeedItemEnclosures(item).map((
         { url, ...rest },
-      ) => ({ ...rest, url: normalizeUrl(url, link ?? root) ?? url }));
+      ) => ({
+        ...rest,
+        url: normalizeUrl(unscapeEntities(url), link ?? root) ?? url,
+      }));
 
-      let content = resolveFeedItemContent(item);
+      let content = unscapeEntities(resolveFeedItemContent(item));
       content = normalizeContentUrls(content, link ?? root) ?? content;
 
       return ({
@@ -134,7 +142,7 @@ export const jsonFeedResolver: FeedResolver = (
         id: resolveFeedItemId(item),
         image,
         link,
-        title: resolveFeedItemTitle(item),
+        title: unscapeEntities(resolveFeedItemTitle(item)),
         updatedAt: resolveUpdatedAt(item),
       } as FeedItem);
     }),

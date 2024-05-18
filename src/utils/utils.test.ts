@@ -4,6 +4,7 @@ import {
   isLinkPossiblyAImage,
   normalizeContentUrls,
   normalizeUrl,
+  unscapeEntities,
   webImageFileExtensions,
 } from "./utils.ts";
 import { assertEquals, describe, it } from "../test_deps.ts";
@@ -202,6 +203,22 @@ describe("findImageInContent()", () => {
     assertEquals(
       findImageInContent('foo <img alt="foo" src="foo.png" />'),
       "foo.png",
+    );
+  });
+});
+
+describe("unscapeEntities()", () => {
+  it("should unscape html entities", () => {
+    assertEquals(unscapeEntities(""), "");
+    assertEquals(
+      unscapeEntities("foo bar <p>oioio</p>"),
+      "foo bar <p>oioio</p>",
+    );
+    assertEquals(unscapeEntities([]), []);
+    assertEquals(unscapeEntities(undefined), undefined);
+    assertEquals(
+      unscapeEntities("&lt;&gt;&apos;&amp;&#65;foobar&#x41;"),
+      "<>'&AfoobarA",
     );
   });
 });

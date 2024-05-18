@@ -1,6 +1,10 @@
 import { _, XMLBuilder, XMLParser, XMLValidator } from "../deps.ts";
 import type { Feed, FeedItem, FeedResolver, IsResolvable } from "./types.ts";
-import { findImageInContent, normalizeContentUrls } from "../utils/utils.ts";
+import {
+  findImageInContent,
+  normalizeContentUrls,
+  unscapeEntities,
+} from "../utils/utils.ts";
 import {
   findImageInEnclosures,
   isLinkPossiblyAImage,
@@ -215,16 +219,16 @@ export const resolver = (
   feed: Record<string, unknown>,
   items: Record<string, unknown>[],
 ) => {
-  const root = resolveFeedUrl(feed);
+  const root = unscapeEntities(resolveFeedUrl(feed));
 
   const result: Feed = {
-    title: resolveFeedTitle(feed),
+    title: unscapeEntities(resolveFeedTitle(feed)),
     url: root,
     items: items
       .filter((item) => !!item)
       .map(
         (item) => {
-          const link = resolveFeedItemLink(item);
+          const link = unscapeEntities(resolveFeedItemLink(item));
 
           let image = normalizeUrl(resolveFeedItemImage(item), link ?? root);
           image = normalizeUrl(image, link ?? root) ?? image;
@@ -232,10 +236,10 @@ export const resolver = (
           const enclosures = resolveFeedItemEnclosures(item)
             .map(({ url, ...rest }) => ({
               ...rest,
-              url: normalizeUrl(url, link ?? root) ?? url,
+              url: normalizeUrl(unscapeEntities(url), link ?? root) ?? url,
             }));
 
-          let content = resolveFeedItemContent(item);
+          let content = unscapeEntities(resolveFeedItemContent(item));
           content = normalizeContentUrls(content, link ?? root) ?? content;
 
           return {
@@ -245,7 +249,7 @@ export const resolver = (
             link,
             id: resolveFeedItemId(item),
             image,
-            title: resolveFeedItemTitle(item),
+            title: unscapeEntities(resolveFeedItemTitle(item)),
             updatedAt: resolveFeedItemUpdatedAt(item),
           } as FeedItem;
         },

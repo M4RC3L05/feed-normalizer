@@ -1,3 +1,5 @@
+import { unescape } from "../deps.ts";
+
 // Ref: https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
 export const webImageFileExtensions = [
   // APNG
@@ -81,3 +83,6 @@ export const findImageInContent = (content: string) => {
     return match[1];
   }
 };
+
+export const unscapeEntities = <T>(data: T): T =>
+  (typeof data === "string" ? unescape(data) : data) as T;
