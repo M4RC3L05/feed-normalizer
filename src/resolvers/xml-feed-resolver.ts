@@ -239,7 +239,7 @@ export const resolver = (
               url: normalizeUrl(unscapeEntities(url), link ?? root) ?? url,
             }));
 
-          let content = unscapeEntities(resolveFeedItemContent(item));
+          let content = resolveFeedItemContent(item);
           content = normalizeContentUrls(content, link ?? root) ?? content;
 
           return {
