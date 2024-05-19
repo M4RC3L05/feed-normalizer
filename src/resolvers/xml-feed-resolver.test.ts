@@ -429,6 +429,12 @@ describe("resolver()", () => {
           );
 
           assertEquals(
+            resolver({}, [{ link: { "@href": "foo" } }])
+              .items[0].link,
+            "foo",
+          );
+
+          assertEquals(
             resolver({}, [{ link: { "@rel": "alternate", "@url": "foo" } }])
               .items[0].link,
             "foo",

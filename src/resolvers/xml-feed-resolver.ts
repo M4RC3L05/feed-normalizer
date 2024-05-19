@@ -113,10 +113,7 @@ const resolveFeedItemEnclosures = (feedItem: Record<string, unknown>) =>
 const resolveFeedItemLink = (feedItem: Record<string, unknown>) =>
   ["link"]
     .flatMap((path) => _.get(feedItem, path))
-    .filter((value) =>
-      typeof value === "string" || (_.isObject(value) && "#text" in value) ||
-      _.get(value, "@rel") === "alternate"
-    )
+    .filter((value) => typeof value === "string" || _.isObject(value))
     .map((value) =>
       typeof value === "string"
         ? value
