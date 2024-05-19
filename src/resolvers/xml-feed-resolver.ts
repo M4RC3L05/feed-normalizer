@@ -230,7 +230,10 @@ export const resolver = (
         (item) => {
           const link = unscapeEntities(resolveFeedItemLink(item));
 
-          let image = normalizeUrl(resolveFeedItemImage(item), link ?? root);
+          let image = normalizeUrl(
+            unscapeEntities(resolveFeedItemImage(item)),
+            link ?? root,
+          );
           image = normalizeUrl(image, link ?? root) ?? image;
 
           const enclosures = resolveFeedItemEnclosures(item)
