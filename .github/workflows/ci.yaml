@@ -28,7 +28,4 @@ jobs:
         run: mise run check:lint
 
       - name: run tests
-        run: deno test
-
-      - name: run tests
         run: deno test --allow-read
