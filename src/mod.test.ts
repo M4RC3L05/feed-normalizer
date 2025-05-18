@@ -1,5 +1,5 @@
-import { assertEquals, fail } from "./test_deps.ts";
-import { describe, it } from "./test_deps.ts";
+import { describe, it } from "@std/testing/bdd";
+import { assertEquals, fail } from "@std/assert";
 import { resolve } from "./mod.ts";
 
 describe("resolve()", () => {
@@ -10,7 +10,7 @@ describe("resolve()", () => {
       fail("should throw");
     } catch (error) {
       assertEquals(
-        error.message,
+        (error as Error).message,
         "Could not find suitable feed resolve for given data",
       );
     }

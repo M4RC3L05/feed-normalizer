@@ -1,3 +1,5 @@
+import { describe, it } from "@std/testing/bdd";
+import { assertEquals } from "@std/assert";
 import {
   findImageInContent,
   findImageInEnclosures,
@@ -7,7 +9,6 @@ import {
   unscapeEntities,
   webImageFileExtensions,
 } from "./utils.ts";
-import { assertEquals, describe, it } from "../test_deps.ts";
 
 describe("normalizeUrl()", () => {
   it("should not normalize if url is not valid", () => {

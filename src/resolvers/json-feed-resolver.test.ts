@@ -1,9 +1,11 @@
+import { describe, it } from "@std/testing/bdd";
+import { assertSnapshot } from "@std/testing/snapshot";
+import { assertEquals } from "@std/assert";
 import {
   isValidJsonData,
   jsonFeedIsResolvable,
   jsonFeedResolver,
 } from "./json-feed-resolver.ts";
-import { assertEquals, assertSnapshot, describe, it } from "../test_deps.ts";
 
 describe("isValidJsonData()", () => {
   it("shold validate it is a valid json", () => {

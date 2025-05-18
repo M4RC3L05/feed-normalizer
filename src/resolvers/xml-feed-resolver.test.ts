@@ -1,4 +1,6 @@
-import { assertEquals, assertSnapshot, describe, it } from "../test_deps.ts";
+import { describe, it } from "@std/testing/bdd";
+import { assertSnapshot } from "@std/testing/snapshot";
+import { assertEquals } from "@std/assert";
 import {
   atomFeedIsResolvable,
   atomFeedResolver,
@@ -323,7 +325,7 @@ describe("resolver()", () => {
           );
 
           assertEquals(
-            resolver({}, [{ pubDate: "2024-01-01T00:00:00.000Z" }]).items[0]
+            resolver({}, [{ pubdate: "2024-01-01T00:00:00.000Z" }]).items[0]
               .createdAt,
             new Date("2024-01-01T00:00:00.000Z"),
           );
@@ -750,6 +752,53 @@ describe("atomFeedResolver()", () => {
         `.trim())!,
       ),
     );
+
+    await assertSnapshot(
+      test,
+      atomFeedResolver(
+        xmlToObj(`
+          <?xml version="1.0" encoding="UTF-8"?>
+          <feed xmlns="http://www.w3.org/2005/Atom">
+            <title>Example Atom Feed</title>
+            <link href="http://example.com/feed" rel="self" type="application/atom+xml" />
+            <id>urn:uuid:12345678-90ab-cdef-fedc-ba0987654321</id>
+            <updated>2024-05-17T19:20:00Z</updated>
+
+            <entry>
+              <title>This is the first item title</title>
+              <link href="http://example.com/item/1" rel="alternate" />
+              <id>urn:uuid:11111111-2222-3333-4444-555555555555</id>
+              <published>2024-05-16T10:00:00Z</published>
+              <author>
+                <name>John Doe</name>
+              </author>
+              <summary>This is a summary of the first item content.</summary>
+            </entry>
+
+            <EnTrY>
+              <title>Second item with categories</title>
+              <link href="http://example.com/item/2" rel="alternate" />
+              <id>urn:uuid:22222222-3333-4444-5555-666666666666</id>
+              <updated>2024-05-17T15:30:00Z</updated>
+              <category term="News" scheme="http://www.example.com/categories" />
+              <category term="Technology" scheme="http://www.example.com/categories" />
+              <content type="html">This is the full HTML content of the second item.</content>
+            </EnTrY>
+
+            <entry>
+              <title>Item with enclosure</title>
+              <link href="http://example.com/item/3" rel="alternate" />
+              <id>urn:uuid:33333333-4444-5555-6666-777777777777</id>
+              <updated>2024-05-17T12:45:00Z</updated>
+              <author>
+                <name>Jane Smith</name>
+              </author>
+              <link href="http://example.com/audio/podcast.mp3" rel="enclosure" type="audio/mpeg" length="10245760" />
+            </entry>
+          </feed>
+        `.trim())!,
+      ),
+    );
   });
 });
 
@@ -793,6 +842,50 @@ describe("rssFeedResolver()", () => {
                 <author>Jane Smith</author>
                 <enclosure url="http://example.com/image.jpg" type="image/jpeg" />
               </item>
+            </channel>
+          </rss>      
+        `.trim())!,
+      ),
+    );
+
+    await assertSnapshot(
+      test,
+      rssFeedResolver(
+        xmlToObj(`
+          <?xml version="1.0" encoding="UTF-8"?>
+          <rss version="2.0">
+            <channel>
+              <title>Example RSS Feed</title>
+              <link>http://example.com/feed</link>
+              <description>This is a sample RSS feed description.</description>
+              <lastBuildDate>Fri, 17 May 2024 19:20:00 Z</lastBuildDate>
+          
+              <item>
+                <title>This is the first item title</title>
+                <link>http://example.com/item/1</link>
+                <guid>urn:uuid:11111111-2222-3333-4444-555555555555</guid>
+                <pubDate>Thu, 16 May 2024 10:00:00 Z</pubDate>
+                <author>John Doe</author>
+                <description>This is a summary of the first item content.</description>
+              </item>
+          
+              <ItEm>
+                <title>Second item with category</title>
+                <link>http://example.com/item/2</link>
+                <guid>urn:uuid:22222222-3333-4444-5555-666666666666</guid>
+                <pubDate>Fri, 17 May 2024 15:30:00 Z</pubDate>
+                <category>News</category>
+                <content type="html">This is the full HTML content of the second item.</content>
+              </ItEm>
+          
+              <ItEm>
+                <title>Item with image enclosure</title>
+                <link>http://example.com/item/3</link>
+                <guid>urn:uuid:33333333-4444-5555-6666-777777777777</guid>
+                <pubDate>Fri, 17 May 2024 12:45:00 Z</pubDate>
+                <author>Jane Smith</author>
+                <enclosure url="http://example.com/image.jpg" type="image/jpeg" />
+              </ItEm>
             </channel>
           </rss>      
         `.trim())!,
@@ -916,6 +1009,58 @@ describe("rdfFeedResolver()", () => {
               <ti:inputType>regex</ti:inputType>
             </textinput>
           </rdf:RDF>
+        `.trim())!,
+      ),
+    );
+
+    await assertSnapshot(
+      test,
+      rdfFeedResolver(
+        xmlToObj(`
+          <?xml version="1.0"?>
+          <rdf:RDF 
+            xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+            xmlns="http://purl.org/rss/1.0/"
+          >
+            <channel rdf:about="http://www.xml.com/xml/news.rss">
+              <title>XML.com</title>
+              <link>http://xml.com/pub</link>
+              <description>
+                XML.com features a rich mix of information and services 
+                for the XML community.
+              </description>
+              <image rdf:resource="http://xml.com/universal/images/xml_tiny.gif" />
+              <items>
+                <rdf:Seq>
+                  <rdf:li resource="http://xml.com/pub/2000/08/09/xslt/xslt.html" />
+                  <rdf:li resource="http://xml.com/pub/2000/08/09/rdfdb/index.html" />
+                </rdf:Seq>
+              </items>
+            </channel>
+            <image rdf:about="http://xml.com/universal/images/xml_tiny.gif">
+              <title>XML.com</title>
+              <link>http://www.xml.com</link>
+              <url>http://xml.com/universal/images/xml_tiny.gif</url>
+            </image>
+            <IteM rdf:about="http://xml.com/pub/2000/08/09/xslt/xslt.html">
+              <title>Processing Inclusions with XSLT</title>
+              <link>http://xml.com/pub/2000/08/09/xslt/xslt.html</link>
+              <description>
+              Processing document inclusions with general XML tools can be 
+              problematic. This article proposes a way of preserving inclusion 
+              information through SAX-based processing.
+              </description>
+            </IteM>
+            <IteM rDf:about="http://xml.com/pub/2000/08/09/rdfdb/index.html">
+              <title>Putting RDF to Work</title>
+              <link>http://xml.com/pub/2000/08/09/rdfdb/index.html</link>
+              <description>
+              Tool and API support for the Resource Description Framework 
+              is slowly coming of age. Edd Dumbill takes a look at RDFDB, 
+              one of the most exciting new RDF toolkits.
+              </description>
+            </IteM>
+          </rdf:RDF>  
         `.trim())!,
       ),
     );

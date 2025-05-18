@@ -1,4 +1,5 @@
-import { _, XMLBuilder, XMLParser, XMLValidator } from "../deps.ts";
+import * as _ from "radash";
+import { XMLBuilder, XMLParser, XMLValidator } from "fast-xml-parser";
 import type { Feed, FeedItem, FeedResolver, IsResolvable } from "./types.ts";
 import {
   findImageInContent,
@@ -18,6 +19,8 @@ const parseXml = (data: string) =>
     ignoreAttributes: false,
     attributeNamePrefix: "@",
     textNodeName: "#text",
+    transformTagName: (name) => name.toLowerCase(),
+    transformAttributeName: (name) => name.toLowerCase(),
   }).parse(data);
 
 const stringyfyXML = (data: Record<string, unknown>) =>
@@ -87,7 +90,7 @@ const resolveFeedItemContent = (feedItem: Record<string, unknown>) =>
     .at(0);
 
 const resolveFeedItemCreatedAt = (feedItem: Record<string, unknown>) =>
-  ["published", "pubDate", "dc:date"]
+  ["published", "pubdate", "dc:date"]
     .flatMap((path) => _.get(feedItem, path))
     .map((value) => _.isObject(value) ? _.get(value, "#text") : value)
     .filter((value) =>
@@ -298,15 +301,15 @@ export const rssFeedResolver: FeedResolver = (
 };
 
 export const rdfFeedIsResolvable = (feed: Record<string, unknown>): boolean =>
-  _.isObject(_.get(feed, "rdf:RDF")) &&
-  !_.isEmpty(_.get(feed, "rdf:RDF.channel")) &&
-  !_.isEmpty(_.get(feed, "rdf:RDF.item"));
+  _.isObject(_.get(feed, "rdf:rdf")) &&
+  !_.isEmpty(_.get(feed, "rdf:rdf.channel")) &&
+  !_.isEmpty(_.get(feed, "rdf:rdf.item"));
 
 export const rdfFeedResolver: FeedResolver = (
   feed: Record<string, unknown>,
 ) => {
-  const channel = _.get(feed, "rdf:RDF.channel") as Record<string, unknown>;
-  const items = _.get(feed, "rdf:RDF.item") as Record<string, unknown> | Record<
+  const channel = _.get(feed, "rdf:rdf.channel") as Record<string, unknown>;
+  const items = _.get(feed, "rdf:rdf.item") as Record<string, unknown> | Record<
     string,
     unknown
   >[];

@@ -3,13 +3,26 @@
   "version": "0.1.8",
   "exports": "./src/mod.ts",
   "tasks": {
-    "deps:lock": "deno cache --frozen=false **/*.ts",
-    "deps": "deno cache --reload --frozen **/*.ts"
-  },
-  "imports": {
-    "@std/html": "jsr:@std/html@0.224.0",
-    "fast-xml-parser": "npm:fast-xml-parser@4.3.6",
-    "radash": "npm:radash@12.1.0"
+    "test": {
+      "description": "Run tests",
+      "command": "ENV=test NODE_ENV=test deno test --allow-read  --allow-write --no-check --trace-leaks --parallel"
+    },
+    "check:fmt": {
+      "description": "Run formatting checks",
+      "command": "deno fmt --check"
+    },
+    "check:lint": {
+      "description": "Run lint checks",
+      "command": "deno lint"
+    },
+    "check:check": {
+      "description": "Run check checks",
+      "command": "deno check ."
+    },
+    "checks": {
+      "description": "Run code checks",
+      "dependencies": ["check:fmt", "check:lint", "check:check"]
+    }
   },
   "publish": {
     "include": [
@@ -17,13 +30,25 @@
       "./src/**/*.ts",
       "LICENSE",
       "README.md",
-      "deno.json",
-      "deno.lock"
+      "deno.json"
     ],
     "exclude": [
       "./src/*.test.ts",
       "./src/**/*.test.ts",
       "./src/test_deps.ts"
     ]
+  },
+  "lint": {
+    "exclude": ["node_modules"],
+    "rules": {
+      "include": ["verbatim-module-syntax"]
+    }
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@^1.0.13",
+    "@std/html": "jsr:@std/html@1.0.4",
+    "@std/testing": "jsr:@std/testing@^1.0.12",
+    "fast-xml-parser": "npm:fast-xml-parser@5.2.3",
+    "radash": "npm:radash@12.1.0"
   }
 }
