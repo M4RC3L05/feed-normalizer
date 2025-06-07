@@ -28,6 +28,7 @@ snapshot[`atomFeedResolver() > should be able to resolve a spec compliant atom f
       createdAt: undefined,
       enclosures: [
         {
+          title: undefined,
           type: "audio/mpeg",
           url: "http://example.com/audio/podcast.mp3",
         },
@@ -72,6 +73,7 @@ snapshot[`atomFeedResolver() > should be able to resolve a spec compliant atom f
       createdAt: undefined,
       enclosures: [
         {
+          title: undefined,
           type: "audio/mpeg",
           url: "http://example.com/audio/podcast.mp3",
         },
@@ -116,6 +118,7 @@ snapshot[`rssFeedResolver() > should be able to resolve a spec compliant rss fee
       createdAt: 2024-05-17T12:45:00.000Z,
       enclosures: [
         {
+          title: undefined,
           type: "image/jpeg",
           url: "http://example.com/image.jpg",
         },
@@ -160,6 +163,7 @@ snapshot[`rssFeedResolver() > should be able to resolve a spec compliant rss fee
       createdAt: 2024-05-17T12:45:00.000Z,
       enclosures: [
         {
+          title: undefined,
           type: "image/jpeg",
           url: "http://example.com/image.jpg",
         },

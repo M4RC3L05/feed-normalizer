@@ -13,6 +13,9 @@ import {
 } from "./resolvers/mod.ts";
 
 export const resolve = (payload: string): Feed => {
+  // Lets do some cleanup
+  payload = payload.trim();
+
   const jsonResponse = isValidJsonData(payload);
 
   if (jsonResponse.success) {

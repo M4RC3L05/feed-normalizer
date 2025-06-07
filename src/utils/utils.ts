@@ -29,7 +29,7 @@ export const webImageFileExtensions = [
 ];
 
 export const normalizeUrl = (url?: string, base?: string) => {
-  if (!url || url.startsWith("http")) {
+  if (!url || url.startsWith("http") || !base || !base.startsWith("http")) {
     return url;
   } else {
     return URL.parse(url, base)?.toString() ?? url;

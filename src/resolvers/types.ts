@@ -8,7 +8,7 @@ export type FeedItem = {
   id: string | undefined;
   link: string | undefined;
   title: string | undefined;
-  enclosures: { url: string; type?: string }[];
+  enclosures: { url: string; type?: string; title?: string }[];
   image: string | undefined;
   content: string | undefined;
   createdAt: Date | undefined;

@@ -52,8 +52,8 @@ const resolveFeedUrl = (feed: Record<string, unknown>) =>
     .map((value) => (value as string).trim())
     .at(0) as string | undefined;
 
-const resolveFeedItemContent = (feedItem: Record<string, unknown>) =>
-  [
+const resolveFeedItemContent = (feedItem: Record<string, unknown>) => {
+  return [
     "content",
     "content:encoded",
     "summary",
@@ -67,9 +67,9 @@ const resolveFeedItemContent = (feedItem: Record<string, unknown>) =>
       const aType = _.get(a, "@type");
       const bType = _.get(b, "@type");
       const aWithHtml = _.isObject(a) && typeof aType === "string" &&
-        ["html", "xhtml"].some((type) => aType.includes(type));
+        aType.includes("html");
       const bWithHtml = _.isObject(a) && typeof bType === "string" &&
-        ["html", "xhtml"].some((type) => bType.includes(type));
+        bType.includes("html");
 
       if (aWithHtml && bWithHtml) return 0;
       if (aWithHtml) return -1;
@@ -78,7 +78,8 @@ const resolveFeedItemContent = (feedItem: Record<string, unknown>) =>
     })
     .map((value) =>
       // Parse xhtml object
-      _.get(value, "@type") === "xhtml"
+      typeof _.get(value, "@type") === "string" &&
+        _.get<string>(value, "@type").includes("html")
         // deno-lint-ignore no-explicit-any
         ? stringyfyXML(value as any)
         : _.isObject(value)
@@ -88,6 +89,7 @@ const resolveFeedItemContent = (feedItem: Record<string, unknown>) =>
     .filter((value) => typeof value === "string" && value.trim().length > 0)
     .map((value) => (value as string).trim())
     .at(0);
+};
 
 const resolveFeedItemCreatedAt = (feedItem: Record<string, unknown>) =>
   ["published", "pubdate", "dc:date"]
@@ -110,6 +112,7 @@ const resolveFeedItemEnclosures = (feedItem: Record<string, unknown>) =>
     .map((value) => ({
       url: (_.get(value, "@href") ?? _.get(value, "@url")) as string,
       type: _.get(value, "@type") as string | undefined,
+      title: _.get(value, "@title") as string | undefined,
     }))
     .filter(({ url }) => url !== null && url !== undefined);
 
@@ -148,10 +151,10 @@ const resolveFeedItemImage = (feedItem: Record<string, unknown>) => {
 
   const searchKeys = [
     "media:content",
-    "media:thumbnail.@url",
+    "media:thumbnail",
     "media:group.media:content",
-    "media:group.media:thumbnail.@url",
-    "itunes:image.@href",
+    "media:group.media:thumbnail",
+    "itunes:image",
   ];
 
   const result = searchKeys
@@ -169,8 +172,15 @@ const resolveFeedItemImage = (feedItem: Record<string, unknown>) => {
       const isImgByType = ["image", "img"].some((fragment) =>
         type?.includes(fragment)
       );
+      const medium = _.get<string | undefined>(value, "@medium");
+      const isImgByMedium = ["image", "img"].some((fragment) =>
+        medium?.includes(fragment)
+      );
 
-      if (typeof url === "string" && (isImageByUrl || isImgByType)) {
+      if (
+        typeof url === "string" &&
+        (isImageByUrl || isImgByType || isImgByMedium)
+      ) {
         return url;
       }
     })
@@ -228,22 +238,27 @@ export const resolver = (
       .filter((item) => !!item)
       .map(
         (item) => {
-          const link = unscapeEntities(resolveFeedItemLink(item));
+          const link = normalizeUrl(
+            unscapeEntities(resolveFeedItemLink(item)),
+            root,
+          );
 
           let image = normalizeUrl(
             unscapeEntities(resolveFeedItemImage(item)),
-            link ?? root,
+            link,
           );
-          image = normalizeUrl(image, link ?? root) ?? image;
+          image = normalizeUrl(image, link) ?? image;
 
           const enclosures = resolveFeedItemEnclosures(item)
             .map(({ url, ...rest }) => ({
               ...rest,
-              url: normalizeUrl(unscapeEntities(url), link ?? root) ?? url,
+              url: normalizeUrl(unscapeEntities(url), link) ?? url,
             }));
 
           let content = resolveFeedItemContent(item);
-          content = normalizeContentUrls(content, link ?? root) ?? content;
+          content = unscapeEntities(
+            normalizeContentUrls(content, link) ?? content,
+          );
 
           return {
             content,

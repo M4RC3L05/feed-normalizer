@@ -360,35 +360,36 @@ describe("resolver()", () => {
 
         it("should resolve feed item enclosures", () => {
           assertEquals(
-            resolver({}, [{ enclosure: { "@url": "bar" } }]).items[0]
+            resolver({}, [{ enclosure: { "@url": "bar", "@title": "biz" } }])
+              .items[0]
               .enclosures,
-            [{ url: "bar", type: undefined }],
+            [{ url: "bar", type: undefined, title: "biz" }],
           );
 
           assertEquals(
             resolver({}, [{ enclosure: { "@url": "bar", "@type": "foo" } }])
               .items[0]
               .enclosures,
-            [{ url: "bar", type: "foo" }],
+            [{ url: "bar", type: "foo", title: undefined }],
           );
 
           assertEquals(
             resolver({}, [{ enclosure: [{ "@url": "bar" }] }]).items[0]
               .enclosures,
-            [{ url: "bar", type: undefined }],
+            [{ url: "bar", type: undefined, title: undefined }],
           );
 
           assertEquals(
             resolver({}, [{ enclosure: [{ "@url": "bar", "@type": "foo" }] }])
               .items[0]
               .enclosures,
-            [{ url: "bar", type: "foo" }],
+            [{ url: "bar", type: "foo", title: undefined }],
           );
 
           assertEquals(
             resolver({}, [{ link: { "@rel": "enclosure", "@href": "foo" } }])
               .items[0].enclosures,
-            [{ url: "foo", type: undefined }],
+            [{ url: "foo", type: undefined, title: undefined }],
           );
 
           assertEquals(
@@ -396,7 +397,7 @@ describe("resolver()", () => {
               link: { "@rel": "enclosure", "@href": "foo", "@type": "foo" },
             }])
               .items[0].enclosures,
-            [{ url: "foo", type: "foo" }],
+            [{ url: "foo", type: "foo", title: undefined }],
           );
         });
       });
@@ -555,9 +556,12 @@ describe("resolver()", () => {
           );
 
           assertEquals(
-            resolver({}, [{ "media:thumbnail": { "@url": "foo" } }]).items[0]
+            resolver({}, [{
+              "media:thumbnail": { "@url": "https://foo.jpeg" },
+            }])
+              .items[0]
               .image,
-            "foo",
+            "https://foo.jpeg",
           );
 
           assertEquals(
@@ -572,7 +576,7 @@ describe("resolver()", () => {
           assertEquals(
             resolver({}, [{
               "media:group": {
-                "media:thumbnail": { "@url": "foo" },
+                "media:thumbnail": { "@url": "foo", "@medium": "image" },
               },
             }]).items[0].image,
             "foo",
@@ -585,13 +589,13 @@ describe("resolver()", () => {
                 "media:thumbnail": { "@url": "foo" },
               },
             }]).items[0].image,
-            "foo",
+            undefined,
           );
 
           assertEquals(
             resolver({}, [{ "itunes:image": { "@href": "foo" } }]).items[0]
               .image,
-            "foo",
+            undefined,
           );
         });
 
