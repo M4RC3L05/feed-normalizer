@@ -1,3 +1,3 @@
 # Feed normalizer
 
-Normalize RSS/RDF/JSON feeds
+Normalize RSS/RDF/ATOM/JSON feeds
