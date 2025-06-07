@@ -1,8 +1,15 @@
-import * as _ from "radash";
 import { XMLBuilder, XMLParser, XMLValidator } from "fast-xml-parser";
-import type { Feed, FeedItem, FeedResolver, IsResolvable } from "./types.ts";
+import type {
+  Feed,
+  FeedItem,
+  FeedResolver,
+  IsResolvable,
+  ParsedFeed,
+  ParsedFeedItem,
+} from "./types.ts";
 import {
   findImageInContent,
+  isObject,
   normalizeContentUrls,
   unscapeEntities,
 } from "../utils/utils.ts";
@@ -30,46 +37,42 @@ const stringyfyXML = (data: Record<string, unknown>) =>
     textNodeName: "#text",
   }).build(data);
 
-const resolveFeedTitle = (feed: Record<string, unknown>) =>
-  ["title"]
-    .flatMap((path) => _.get(feed, path))
-    .map((value) => _.isObject(value) ? _.get(value, "#text") : value)
+const resolveFeedTitle = (feed: ParsedFeed) =>
+  [feed?.title]
+    .flat()
+    .map((value) => value?.["#text"] ?? value)
     .filter((value) => typeof value === "string" && value.trim().length > 0)
-    .map((value) => (value as string).trim())
+    .map((value: string) => value.trim())
     .at(0);
 
-const resolveFeedUrl = (feed: Record<string, unknown>) =>
-  ["link", "atom:link"]
-    .flatMap((path) => _.get(feed, path))
+const resolveFeedUrl = (feed: ParsedFeed) =>
+  [feed.link, feed["atom:link"]]
+    .flat()
     .map((value) =>
       typeof value === "string"
         ? value
-        : _.isObject(value) && _.get(value, "@rel") === "self"
-        ? _.get(value, "@href")
-        : _.get(value, "#text")
+        : value?.["@rel"] === "self"
+        ? value?.["@href"]
+        : value?.["#text"]
     )
     .filter((value) => typeof value === "string" && value.trim().length > 0)
-    .map((value) => (value as string).trim())
-    .at(0) as string | undefined;
+    .map((value: string) => value.trim())
+    .at(0);
 
-const resolveFeedItemContent = (feedItem: Record<string, unknown>) => {
+const resolveFeedItemContent = (feedItem: ParsedFeedItem) => {
   return [
-    "content",
-    "content:encoded",
-    "summary",
-    "description",
-    "media:group.media:description",
-    "dc:description",
+    feedItem.content,
+    feedItem["content:encoded"],
+    feedItem.summary,
+    feedItem.description,
+    feedItem["media:group"]?.["media:description"],
+    feedItem["dc:description"],
   ]
-    .flatMap((path) => _.get(feedItem, path))
+    .flat()
     // Make html contents be with higher priority.
     .toSorted((a, b) => {
-      const aType = _.get(a, "@type");
-      const bType = _.get(b, "@type");
-      const aWithHtml = _.isObject(a) && typeof aType === "string" &&
-        aType.includes("html");
-      const bWithHtml = _.isObject(a) && typeof bType === "string" &&
-        bType.includes("html");
+      const aWithHtml = a?.["@type"]?.includes?.("html");
+      const bWithHtml = b?.["@type"]?.includes?.("html");
 
       if (aWithHtml && bWithHtml) return 0;
       if (aWithHtml) return -1;
@@ -78,61 +81,62 @@ const resolveFeedItemContent = (feedItem: Record<string, unknown>) => {
     })
     .map((value) =>
       // Parse xhtml object
-      typeof _.get(value, "@type") === "string" &&
-        _.get<string>(value, "@type").includes("html")
-        // deno-lint-ignore no-explicit-any
-        ? stringyfyXML(value as any)
-        : _.isObject(value)
-        ? _.get(value, "#text")
-        : value
+      typeof value?.["@type"] === "string" &&
+        value["@type"].includes?.("html")
+        ? stringyfyXML(value)
+        : (value?.["#text"] ?? value)
     )
     .filter((value) => typeof value === "string" && value.trim().length > 0)
-    .map((value) => (value as string).trim())
+    .map((value: string) => value.trim())
     .at(0);
 };
 
-const resolveFeedItemCreatedAt = (feedItem: Record<string, unknown>) =>
-  ["published", "pubdate", "dc:date"]
-    .flatMap((path) => _.get(feedItem, path))
-    .map((value) => _.isObject(value) ? _.get(value, "#text") : value)
+const resolveFeedItemCreatedAt = (feedItem: ParsedFeedItem) =>
+  [feedItem.published, feedItem.pubdate, feedItem["dc:date"]]
+    .flat()
+    .map((value) => value?.["#text"] ?? value)
     .filter((value) =>
       typeof value === "string" && !Number.isNaN(new Date(value).valueOf())
     )
-    .map((value) => new Date(value as string))
+    .map((value: string) => new Date(value))
     .at(0);
 
-const resolveFeedItemEnclosures = (feedItem: Record<string, unknown>) =>
-  ["enclosure", "link"]
-    .flatMap((path) => _.get(feedItem, path))
+const resolveFeedItemEnclosures = (feedItem: ParsedFeedItem) =>
+  [feedItem.enclosure, feedItem.link]
+    .flat()
     .filter((value) =>
-      _.isObject(value) && "@rel" in value
-        ? value["@rel"] === "enclosure"
-        : _.isObject(value)
+      isObject(value) && !!value?.["@rel"]
+        ? value["@rel"]?.includes?.("enclosure")
+        : isObject(value)
     )
     .map((value) => ({
-      url: (_.get(value, "@href") ?? _.get(value, "@url")) as string,
-      type: _.get(value, "@type") as string | undefined,
-      title: _.get(value, "@title") as string | undefined,
+      url: (value?.["@href"] ?? value?.["@url"]) as string | undefined,
+      type: value?.["@type"] as string | undefined,
+      title: value?.["@title"] as string | undefined,
     }))
-    .filter(({ url }) => url !== null && url !== undefined);
+    .filter(({ url }) => url !== null && url !== undefined) as {
+      url: string;
+      type: string | undefined;
+      title: string | undefined;
+    }[];
 
-const resolveFeedItemLink = (feedItem: Record<string, unknown>) =>
-  ["link"]
-    .flatMap((path) => _.get(feedItem, path))
-    .filter((value) => typeof value === "string" || _.isObject(value))
+const resolveFeedItemLink = (feedItem: ParsedFeedItem) =>
+  [feedItem.link]
+    .flat()
+    .filter((value) => typeof value === "string" || isObject(value))
     .map((value) =>
       typeof value === "string"
         ? value
-        : _.get(value, "@href") ?? _.get(value, "@url") ?? _.get(value, "#text")
+        : value?.["@href"] ?? value?.["@url"] ?? value?.["#text"]
     )
     .filter((value) => typeof value === "string" && value.trim().length > 0)
-    .map((value) => (value as string).trim())
-    .at(0) as string | undefined;
+    .map((value: string) => value.trim())
+    .at(0);
 
-const resolveFeedItemId = (feedItem: Record<string, unknown>) =>
-  ["id", "guid"]
-    .flatMap((path) => _.get(feedItem, path))
-    .map((value) => _.isObject(value) ? _.get(value, "#text") : value)
+const resolveFeedItemId = (feedItem: ParsedFeedItem) =>
+  [feedItem.id, feedItem.guid]
+    .flat()
+    .map((value) => isObject(value) ? value?.["#text"] : value)
     .filter((value) =>
       typeof value === "string" && value.trim().length > 0 ||
       typeof value === "number"
@@ -140,7 +144,7 @@ const resolveFeedItemId = (feedItem: Record<string, unknown>) =>
     .map((value) => typeof value === "string" ? value.trim() : value)
     .at(0);
 
-const resolveFeedItemImage = (feedItem: Record<string, unknown>) => {
+const resolveFeedItemImage = (feedItem: ParsedFeedItem) => {
   const imgFromEnclosures = findImageInEnclosures(
     resolveFeedItemEnclosures(feedItem),
   );
@@ -149,30 +153,27 @@ const resolveFeedItemImage = (feedItem: Record<string, unknown>) => {
     typeof imgFromEnclosures === "string" && imgFromEnclosures.trim().length > 0
   ) return imgFromEnclosures.trim();
 
-  const searchKeys = [
-    "media:content",
-    "media:thumbnail",
-    "media:group.media:content",
-    "media:group.media:thumbnail",
-    "itunes:image",
-  ];
-
-  const result = searchKeys
-    .flatMap((path) => _.get(feedItem, path))
-    .filter((value) => typeof value === "string" || _.isObject(value))
+  const result = [
+    feedItem["media:content"],
+    feedItem["media:thumbnail"],
+    feedItem["media:group"]?.["media:content"],
+    feedItem["media:group"]?.["media:thumbnail"],
+    feedItem["itunes:image"],
+  ]
+    .flat()
+    .filter((value) => typeof value === "string" || isObject(value))
     .map((value) => {
       if (typeof value === "string") {
         return value;
       }
 
-      const url = (_.get(value, "@src") ?? _.get(value, "@url") ??
-        _.get(value, "@href")) as string | undefined;
+      const url = value?.["@src"] ?? value?.["@url"] ?? value?.["@href"];
       const isImageByUrl = isLinkPossiblyAImage(url ?? "");
-      const type = _.get<string | undefined>(value, "@type");
+      const type = value?.["@type"];
       const isImgByType = ["image", "img"].some((fragment) =>
         type?.includes(fragment)
       );
-      const medium = _.get<string | undefined>(value, "@medium");
+      const medium = value?.["@medium"];
       const isImgByMedium = ["image", "img"].some((fragment) =>
         medium?.includes(fragment)
       );
@@ -186,7 +187,7 @@ const resolveFeedItemImage = (feedItem: Record<string, unknown>) => {
     })
     .filter((value) => typeof value === "string" && value.trim().length > 0)
     .map((value) => (value as string).trim())
-    .at(0) as string | undefined;
+    .at(0);
 
   if (typeof result === "string" && result.length > 0) return result;
 
@@ -207,22 +208,22 @@ const resolveFeedItemImage = (feedItem: Record<string, unknown>) => {
   }
 };
 
-const resolveFeedItemTitle = (feedItem: Record<string, unknown>) =>
-  ["title", "dc:title"]
-    .flatMap((path) => _.get(feedItem, path))
-    .map((value) => _.isObject(value) ? _.get(value, "#text") : value)
+const resolveFeedItemTitle = (feedItem: ParsedFeedItem) =>
+  [feedItem.title, feedItem["dc:title"]]
+    .flat()
+    .map((value) => isObject(value) ? value?.["#text"] : value)
     .filter((value) => typeof value === "string" && value.trim().length > 0)
-    .map((value) => (value as string).trim())
-    .at(0) as string | undefined;
+    .map((value: string) => value.trim())
+    .at(0);
 
-const resolveFeedItemUpdatedAt = (feedItem: Record<string, unknown>) =>
-  ["updated"]
-    .flatMap((path) => _.get(feedItem, path))
-    .map((value) => _.isObject(value) ? _.get(value, "#text") : value)
+const resolveFeedItemUpdatedAt = (feedItem: ParsedFeedItem) =>
+  [feedItem.updated]
+    .flat()
+    .map((value) => isObject(value) ? value?.["#text"] : value)
     .filter((value) =>
       typeof value === "string" && !Number.isNaN(new Date(value).valueOf())
     )
-    .map((value) => new Date(value as string))
+    .map((value: string) => new Date(value))
     .at(0);
 
 export const resolver = (
@@ -235,7 +236,6 @@ export const resolver = (
     title: unscapeEntities(resolveFeedTitle(feed)),
     url: root,
     items: items
-      .filter((item) => !!item)
       .map(
         (item) => {
           const link = normalizeUrl(
@@ -277,57 +277,71 @@ export const resolver = (
   return result;
 };
 
-export const isValidXMLData: IsResolvable = (data: string) =>
-  typeof data === "string" && data.trim().length > 0 &&
-    isXMLValid(data) === true
+export const isValidXMLData: IsResolvable = (data: string) => {
+  return typeof data === "string" && data.trim().length > 0 &&
+      isXMLValid(data) === true
     ? { success: true, data: parseXml(data) as Record<string, unknown> }
     : { success: false };
+};
 
-export const atomFeedIsResolvable = (feed: Record<string, unknown>): boolean =>
-  _.isObject(_.get(feed, "feed")) && !_.isEmpty(_.get(feed, "feed.entry"));
+export const atomFeedIsResolvable = (feed: Record<string, unknown>) => {
+  return isObject(feed?.feed);
+};
 
 export const atomFeedResolver: FeedResolver = (
   feed: Record<string, unknown>,
 ) => {
-  const data = _.get(feed, "feed") as Record<string, unknown>;
+  const data = feed?.feed as Record<string, unknown>;
 
   return resolver(
     data,
-    Array.isArray(data.entry)
-      ? data.entry
-      : [data.entry] as Record<string, unknown>[],
+    Array.isArray(data?.entry)
+      ? data.entry.filter((item) => isObject(item))
+      : [data?.entry].filter((item) => isObject(item)) as Record<
+        string,
+        unknown
+      >[],
   );
 };
 
-export const rssFeedIsResolvable = (feed: Record<string, unknown>): boolean =>
-  _.isObject(_.get(feed, "rss")) && !_.isEmpty(_.get(feed, "rss.channel"));
+export const rssFeedIsResolvable = (feed: Record<string, unknown>): boolean => {
+  return isObject(feed?.rss);
+};
 
 export const rssFeedResolver: FeedResolver = (
   feed: Record<string, unknown>,
 ) => {
-  const data = _.get(feed, "rss.channel") as Record<string, unknown>;
+  const data = (feed?.rss as Record<string, unknown>)?.channel as Record<
+    string,
+    unknown
+  >;
 
   return resolver(
     data,
-    Array.isArray(data.item)
-      ? data.item
-      : [data.item] as Record<string, unknown>[],
+    Array.isArray(data?.item)
+      ? data.item.filter((item) => isObject(item))
+      : [data?.item].filter((item) => isObject(item)) as Record<
+        string,
+        unknown
+      >[],
   );
 };
 
-export const rdfFeedIsResolvable = (feed: Record<string, unknown>): boolean =>
-  _.isObject(_.get(feed, "rdf:rdf")) &&
-  !_.isEmpty(_.get(feed, "rdf:rdf.channel")) &&
-  !_.isEmpty(_.get(feed, "rdf:rdf.item"));
+export const rdfFeedIsResolvable = (feed: Record<string, unknown>): boolean => {
+  return isObject(feed?.["rdf:rdf"]);
+};
 
 export const rdfFeedResolver: FeedResolver = (
   feed: Record<string, unknown>,
 ) => {
-  const channel = _.get(feed, "rdf:rdf.channel") as Record<string, unknown>;
-  const items = _.get(feed, "rdf:rdf.item") as Record<string, unknown> | Record<
-    string,
-    unknown
-  >[];
+  const channel = (feed?.["rdf:rdf"] as Record<string, unknown>)
+    ?.channel as Record<string, unknown>;
+  const items = (feed?.["rdf:rdf"] as Record<string, unknown>)?.item;
 
-  return resolver(channel, Array.isArray(items) ? items : [items]);
+  return resolver(
+    channel,
+    Array.isArray(items)
+      ? items.filter((item) => isObject(item))
+      : [items].filter((item) => isObject(item)),
+  );
 };

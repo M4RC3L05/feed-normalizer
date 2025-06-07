@@ -19,3 +19,8 @@ export type FeedResolver = (feed: Record<string, unknown>) => Feed;
 export type IsResolvable = (
   feedData: string,
 ) => { success: false } | { success: true; data: Record<string, unknown> };
+
+// deno-lint-ignore no-explicit-any
+export type ParsedFeed = Record<string, any>;
+// deno-lint-ignore no-explicit-any
+export type ParsedFeedItem = Record<string, any>;

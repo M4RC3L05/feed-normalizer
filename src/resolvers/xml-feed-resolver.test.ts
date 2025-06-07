@@ -42,20 +42,29 @@ describe("ATOM FEED", () => {
         ),
         false,
       );
-
-      assertEquals(
-        atomFeedIsResolvable(
-          xmlToObj('<?xml version="1.0"?><feed><entry></entry></feed>')!,
-        ),
-        false,
-      );
     });
 
     it("should return true if a valid atom feed", () => {
       assertEquals(
         atomFeedIsResolvable(
+          xmlToObj('<?xml version="1.0"?><feed><entry></entry></feed>')!,
+        ),
+        true,
+      );
+
+      assertEquals(
+        atomFeedIsResolvable(
           xmlToObj(
             '<?xml version="1.0"?><feed><entry>foo</entry></feed>',
+          )!,
+        ),
+        true,
+      );
+
+      assertEquals(
+        atomFeedIsResolvable(
+          xmlToObj(
+            '<?xml version="1.0"?><feed><entry><id>foo</id></entry></feed>',
           )!,
         ),
         true,

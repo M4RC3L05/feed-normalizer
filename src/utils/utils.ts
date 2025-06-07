@@ -86,3 +86,8 @@ export const findImageInContent = (content: string) => {
 
 export const unscapeEntities = <T>(data: T): T =>
   (typeof data === "string" ? unescape(data) : data) as T;
+
+export const isObject = <T>(data: T) => {
+  return typeof data === "object" && data !== null && data !== undefined &&
+    !Array.isArray(data);
+};

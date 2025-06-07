@@ -18,8 +18,7 @@
     "jsr:@std/path@^1.1.0": "1.1.0",
     "jsr:@std/testing@0.224.0": "0.224.0",
     "jsr:@std/testing@^1.0.13": "1.0.13",
-    "npm:fast-xml-parser@5.2.4": "5.2.4",
-    "npm:radash@12.1.0": "12.1.0"
+    "npm:fast-xml-parser@5.2.4": "5.2.4"
   },
   "jsr": {
     "@std/assert@0.224.0": {
@@ -106,9 +105,6 @@
       ],
       "bin": true
     },
-    "radash@12.1.0": {
-      "integrity": "sha512-b0Zcf09AhqKS83btmUeYBS8tFK7XL2e3RvLmZcm0sTdF1/UUlHSsjXdCcWNxe7yfmAlPve5ym0DmKGtTzP6kVQ=="
-    },
     "strnum@2.1.1": {
       "integrity": "sha512-7ZvoFTiCnGxBtDqJ//Cu6fWtZtc7Y3x+QOirG15wztbdngGSkht27o2pyGWrVy0b4WAy3jbKmnoK6g5VlVNUUw=="
     }
@@ -118,8 +114,7 @@
       "jsr:@std/assert@^1.0.13",
       "jsr:@std/html@1.0.4",
       "jsr:@std/testing@^1.0.13",
-      "npm:fast-xml-parser@5.2.4",
-      "npm:radash@12.1.0"
+      "npm:fast-xml-parser@5.2.4"
     ]
   }
 }
