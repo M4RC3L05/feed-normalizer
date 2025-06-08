@@ -99,8 +99,8 @@ describe("resolver()", () => {
 
       it("should resolve the feed title", () => {
         assertEquals(
-          resolver({ title: "foo" }, [{}]).title,
-          "foo",
+          resolver({ title: "foo &amp; bar" }, [{}]).title,
+          "foo & bar",
         );
 
         assertEquals(
@@ -219,6 +219,16 @@ describe("resolver()", () => {
           assertEquals(
             resolver({}, [{ content: "foo" }]).items[0].content,
             "foo",
+          );
+
+          assertEquals(
+            resolver({}, [{
+              content: {
+                "#text": "<p>fooba</p> &amp;",
+                "@type": "html",
+              },
+            }]).items[0].content,
+            "<p>fooba</p> &",
           );
 
           assertEquals(
