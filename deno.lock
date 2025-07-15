@@ -8,17 +8,19 @@
     "jsr:@std/data-structures@^1.0.8": "1.0.8",
     "jsr:@std/fmt@0.224": "0.224.0",
     "jsr:@std/fs@0.224": "0.224.0",
-    "jsr:@std/fs@^1.0.17": "1.0.18",
+    "jsr:@std/fs@^1.0.18": "1.0.19",
     "jsr:@std/html@1.0.4": "1.0.4",
     "jsr:@std/internal@0.224": "0.224.0",
-    "jsr:@std/internal@^1.0.6": "1.0.8",
+    "jsr:@std/internal@^1.0.6": "1.0.9",
     "jsr:@std/internal@^1.0.7": "1.0.7",
-    "jsr:@std/internal@^1.0.8": "1.0.8",
+    "jsr:@std/internal@^1.0.8": "1.0.9",
+    "jsr:@std/internal@^1.0.9": "1.0.9",
     "jsr:@std/path@0.224": "0.224.0",
-    "jsr:@std/path@^1.1.0": "1.1.0",
+    "jsr:@std/path@^1.1.0": "1.1.1",
+    "jsr:@std/path@^1.1.1": "1.1.1",
     "jsr:@std/testing@0.224.0": "0.224.0",
-    "jsr:@std/testing@^1.0.13": "1.0.13",
-    "npm:fast-xml-parser@5.2.4": "5.2.4"
+    "jsr:@std/testing@^1.0.14": "1.0.14",
+    "npm:fast-xml-parser@5.2.5": "5.2.5"
   },
   "jsr": {
     "@std/assert@0.224.0": {
@@ -49,10 +51,10 @@
         "jsr:@std/path@0.224"
       ]
     },
-    "@std/fs@1.0.18": {
-      "integrity": "24bcad99eab1af4fde75e05da6e9ed0e0dce5edb71b7e34baacf86ffe3969f3a",
+    "@std/fs@1.0.19": {
+      "integrity": "051968c2b1eae4d2ea9f79a08a3845740ef6af10356aff43d3e2ef11ed09fb06",
       "dependencies": [
-        "jsr:@std/path@^1.1.0"
+        "jsr:@std/path@^1.1.1"
       ]
     },
     "@std/html@1.0.4": {
@@ -67,14 +69,17 @@
     "@std/internal@1.0.7": {
       "integrity": "39eeb5265190a7bc5d5591c9ff019490bd1f2c3907c044a11b0d545796158a0f"
     },
-    "@std/internal@1.0.8": {
-      "integrity": "fc66e846d8d38a47cffd274d80d2ca3f0de71040f855783724bb6b87f60891f5"
+    "@std/internal@1.0.9": {
+      "integrity": "bdfb97f83e4db7a13e8faab26fb1958d1b80cc64366501af78a0aee151696eb8"
     },
     "@std/path@0.224.0": {
       "integrity": "55bca6361e5a6d158b9380e82d4981d82d338ec587de02951e2b7c3a24910ee6"
     },
-    "@std/path@1.1.0": {
-      "integrity": "ddc94f8e3c275627281cbc23341df6b8bcc874d70374f75fec2533521e3d6886"
+    "@std/path@1.1.1": {
+      "integrity": "fe00026bd3a7e6a27f73709b83c607798be40e20c81dde655ce34052fd82ec76",
+      "dependencies": [
+        "jsr:@std/internal@^1.0.9"
+      ]
     },
     "@std/testing@0.224.0": {
       "integrity": "371b8a929aa7132240d5dd766a439be8f780ef5c176ab194e0bcab72370c761e",
@@ -85,21 +90,21 @@
         "jsr:@std/path@0.224"
       ]
     },
-    "@std/testing@1.0.13": {
-      "integrity": "74418be16f627dfe996937ab0ffbdbda9c1f35534b78724658d981492f121e71",
+    "@std/testing@1.0.14": {
+      "integrity": "144b3737105b9071cb50c957681f58a1b8ec0f3e5b19ad830f401c5fa931e8f0",
       "dependencies": [
         "jsr:@std/assert@^1.0.13",
         "jsr:@std/async",
         "jsr:@std/data-structures",
-        "jsr:@std/fs@^1.0.17",
+        "jsr:@std/fs@^1.0.18",
         "jsr:@std/internal@^1.0.8",
         "jsr:@std/path@^1.1.0"
       ]
     }
   },
   "npm": {
-    "fast-xml-parser@5.2.4": {
-      "integrity": "sha512-6mNrAVwHip2nGyPYn6xQJK/znBbIoz6to5VMNysrka1/aoSylbB8vjYgkpaFp05EFojiflVV+3QzXe9Ap3Esng==",
+    "fast-xml-parser@5.2.5": {
+      "integrity": "sha512-pfX9uG9Ki0yekDHx2SiuRIyFdyAr1kMIMitPvb0YBo8SUfKvia7w7FIyd/l6av85pFYRhZscS75MwMnbvY+hcQ==",
       "dependencies": [
         "strnum"
       ],
@@ -113,8 +118,8 @@
     "dependencies": [
       "jsr:@std/assert@^1.0.13",
       "jsr:@std/html@1.0.4",
-      "jsr:@std/testing@^1.0.13",
-      "npm:fast-xml-parser@5.2.4"
+      "jsr:@std/testing@^1.0.14",
+      "npm:fast-xml-parser@5.2.5"
     ]
   }
 }
