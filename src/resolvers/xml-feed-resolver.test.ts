@@ -132,6 +132,8 @@ describe("resolver()", () => {
 
         assertEquals(resolver({ link: { "#text": "foo" } }, [{}]).url, "foo");
 
+        assertEquals(resolver({ link: { "@href": "foo" } }, [{}]).url, "foo");
+
         assertEquals(resolver({ "atom:link": "foo" }, [{}]).url, "foo");
 
         assertEquals(
@@ -788,8 +790,7 @@ describe("atomFeedResolver()", () => {
           <feed xmlns="http://www.w3.org/2005/Atom">
             <title>Example Atom Feed</title>
             <link href="http://example.com/feed" rel="self" type="application/atom+xml" />
-            <link href="http://example.com/2" rel="alternate" type="text/html" />
-            <link href="http://example.com/3" rel="alternate" />
+            <link href="http://example.com/3" />
             <id>urn:uuid:12345678-90ab-cdef-fedc-ba0987654321</id>
             <updated>2024-05-17T19:20:00Z</updated>
 

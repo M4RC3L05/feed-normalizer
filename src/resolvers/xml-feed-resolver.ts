@@ -58,6 +58,8 @@ const resolveFeedUrl = (feed: ParsedFeed) =>
           ? value
           : value?.["@rel"] === "alternate"
           ? value?.["@href"]
+          : !value?.["@rel"] && !value?.["#text"]
+          ? value?.["@href"]
           : value?.["#text"]
       )
       .filter((value) => typeof value === "string" && value.trim().length > 0)
