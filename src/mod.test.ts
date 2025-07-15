@@ -29,7 +29,7 @@ describe("resolve()", () => {
             <tagline type="text/html" mode="escaped">
               For documentation &lt;em&gt;only&lt;/em&gt;
             </tagline>
-            <link rel="alternate" type="text/html" href="/"/>
+            <link rel="alternate" type="text/html" href="http://example.org/"/>
             <link rel="self" type="application/atom+xml" href="/feed.atom"/>
             <link rel="prev" type="application/atom+xml" href="/feed.atom?page=1"/>
             <link rel="next" type="application/atom+xml" href="/feed.atom?page=3"/>
@@ -150,12 +150,12 @@ describe("resolve()", () => {
                 {
                   title: undefined,
                   type: "audio/mpeg",
-                  url: "/audio/sample.mp3",
+                  url: "http://example.org/audio/sample.mp3",
                 },
               ],
               id: "tag:feedparser.org,2004-04-20:/docs/examples/atom03.xml:3",
               image: undefined,
-              link: "/entry/3",
+              link: "http://example.org/entry/3",
               title: "First entry title",
               updatedAt: undefined,
             },
@@ -166,7 +166,7 @@ describe("resolve()", () => {
               enclosures: [],
               id: "tag:feedparser.org,2004-04-20:/docs/examples/atom03.xml:4",
               image: undefined,
-              link: "/entry/4",
+              link: "http://example.org/entry/4",
               title: "Second entry title",
               updatedAt: undefined,
             },
@@ -177,13 +177,13 @@ describe("resolve()", () => {
               enclosures: [],
               id: "tag:feedparser.org,2004-04-20:/docs/examples/atom03.xml:4",
               image: undefined,
-              link: "/entry/4",
+              link: "http://example.org/entry/4",
               title: "Third entry title",
               updatedAt: undefined,
             },
           ],
           title: "Sample Feed",
-          url: "/feed.atom",
+          url: "http://example.org/",
         },
       );
     });
@@ -195,7 +195,7 @@ describe("resolve()", () => {
           <feed xmlns="http://www.w3.org/2005/Atom" xml:base="http://example.org/" xml:lang="en">
             <title type="text">Comprehensive Atom 1.0 Example Feed</title>
             <subtitle type="html">A &lt;em&gt;comprehensive&lt;/em&gt; example showing all Atom 1.0 elements</subtitle>
-            <link rel="alternate" type="text/html" href="/"/>
+            <link rel="alternate" type="text/html" href="http://example.org/"/>
             <link rel="self" type="application/atom+xml" href="http://example.org/atom10.xml"/>
             <link rel="first" type="application/atom+xml" href="http://example.org/atom10.xml?page=1"/>
             <link rel="previous" type="application/atom+xml" href="http://example.org/atom10.xml?page=2"/>
@@ -445,7 +445,7 @@ describe("resolve()", () => {
             },
           ],
           title: "Comprehensive Atom 1.0 Example Feed",
-          url: "http://example.org/atom10.xml",
+          url: "http://example.org/",
         },
       );
     });

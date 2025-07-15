@@ -41,7 +41,7 @@ snapshot[`atomFeedResolver() > should be able to resolve a spec compliant atom f
     },
   ],
   title: "Example Atom Feed",
-  url: "http://example.com/feed",
+  url: "http://example.com/2",
 }
 `;
 
@@ -86,7 +86,7 @@ snapshot[`atomFeedResolver() > should be able to resolve a spec compliant atom f
     },
   ],
   title: "Example Atom Feed",
-  url: "http://example.com/feed",
+  url: "http://example.com/2",
 }
 `;
 

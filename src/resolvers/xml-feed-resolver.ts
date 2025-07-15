@@ -56,7 +56,7 @@ const resolveFeedUrl = (feed: ParsedFeed) =>
       .map((value) =>
         typeof value === "string"
           ? value
-          : value?.["@rel"] === "self"
+          : value?.["@rel"] === "alternate"
           ? value?.["@href"]
           : value?.["#text"]
       )
